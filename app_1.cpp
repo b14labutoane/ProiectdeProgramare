@@ -3,8 +3,8 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
-#include "Produs.h"
-#include "DataCalendaristica.h"
+#include "shared/data/Produs.h"
+#include "shared/data/DataCalendaristica.h"
 using namespace std;
 
 vector<Produs> citireStoc(const string& numeFile){
@@ -39,7 +39,7 @@ void vizualizareComenzi(const string& numeFisier) {
         return;
     }
 
-    vector<Produs> stoc = citireStoc("stoc.txt");
+    vector<Produs> stoc = citireStoc("/shared/files/stoc.txt");
 
     int zi, luna, an;
     string linie;
@@ -61,9 +61,7 @@ void vizualizareComenzi(const string& numeFisier) {
             bool gasit = false;
             for (const auto& p : stoc) {
                 if (p.getCodDeBare() == cod) {
-                    cout << "  - " << p.getDenumire() << " -> Cod de bare: " << p.getCodDeBare()
-                         << "  Cantitate: " << p.getCantitate()
-                         << "  Pret: " << p.getPret()  << endl;
+                    cout << "  - " << p<< endl;
                     gasit = true;
                     break;
                 }
@@ -88,7 +86,7 @@ int main(int argc, char *argv[]){
                 cout<<"Sintaxa invalida!"<<endl<<"Sintaxa corecta: ./app_1.exe vizualizare_produs_de_pe_stoc"<<endl;
                 return 1;
             }
-            vector<Produs> stoc = citireStoc("stoc.txt");
+            vector<Produs> stoc = citireStoc("shared/files/stoc.txt");
             for(const auto& produs : stoc){
                 cout<<produs<<endl;
             }
@@ -97,7 +95,7 @@ int main(int argc, char *argv[]){
                     cout<<"Sintaxa invalida!"<<endl<<"Sintaxa corecta: ./app_1.exe adaugare_produs <cod_de_bare> <denumire> <cantitate> <pret>"<<endl;
                     return 1;
                 }
-            vector<Produs> stoc = citireStoc("stoc.txt");
+            vector<Produs> stoc = citireStoc("shared/files/stoc.txt");
             Produs p;
             string cod_de_bare, denumire;
             int cantitate;
@@ -111,7 +109,7 @@ int main(int argc, char *argv[]){
             p.setCantitate(cantitate);
             p.setPret(pret);
             stoc.push_back(p);
-            ofstream fout("stoc.txt");
+            ofstream fout("shared/files/stoc.txt");
             if (!fout) {
                 cout << "Eroare: nu s-a putut deschide fisierul pentru scriere." << endl;
                 return 1;
@@ -127,7 +125,7 @@ int main(int argc, char *argv[]){
                 cout << "Sintaxa invalida!"<<endl<<"Sintaxa corecta: ./app_1.exe stergere_produs <cod_de_bare>" << endl;
                 return 1;
             }
-            vector<Produs> stoc = citireStoc("stoc.txt");
+            vector<Produs> stoc = citireStoc("shared/files/stoc.txt");
             string cod_de_bare = argv[2];
             vector<Produs> stocNou;
             for (const auto& produs : stoc) {
@@ -135,7 +133,7 @@ int main(int argc, char *argv[]){
                     stocNou.push_back(produs);
                 }
             }
-            ofstream fout("stoc.txt");
+            ofstream fout("shared/files/stoc.txt");
             if (!fout) {
                 cout << "Eroare: nu s-a putut deschide fisierul pentru scriere." << endl;
                 return 1;
@@ -152,7 +150,7 @@ int main(int argc, char *argv[]){
                 cout<<"Sintaxa invalida!"<<endl<<"Sintaxa corecta: ./app_1.exe modificare_produs <preț/cantitate> <cod_de_bare> <nr. corespunzător preț/nr. corespunzător cantitate>"<<endl;
                 return 1;
             }
-            vector<Produs> stoc = citireStoc("stoc.txt");
+            vector<Produs> stoc = citireStoc("shared/files/stoc.txt");
             string modificare = argv[2];
             string cod_de_bare = argv[3];
             if(modificare=="pret"){
@@ -178,7 +176,7 @@ int main(int argc, char *argv[]){
                 cout<<"Sintaxa invalida!"<<endl<<"Sintaxa corecta: ./app_1.exe vizualizare_comenzi"<<endl;
                 return 1;
             }
-            vizualizareComenzi("comenzi.txt");
+            vizualizareComenzi("shared/files/comenzi.txt");
         }
         else{
             cout<<"Comanda necunoscuta: "<<comanda<<endl;

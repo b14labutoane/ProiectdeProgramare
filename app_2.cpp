@@ -1,5 +1,5 @@
-#include "DataCalendaristica.h"
-#include "Produs.h"
+#include "shared/data/Produs.h"
+#include "shared/data/DataCalendaristica.h"
 #include <ctime>
 #include <fstream>
 #include <iomanip>
@@ -9,17 +9,6 @@
 #include <vector>
 
 using namespace std;
-
-template <typename T, typename KeyType, typename Getter>
-T gasesteElement(const vector<T> &colectie, const KeyType &cheieCautata,
-                 Getter getKey) {
-  for (const auto &element : colectie) {
-    if (getKey(element) == cheieCautata) {
-      return element;
-    }
-  }
-  return T{};
-}
 
 struct ProdusInCos {
   string cod_de_bare;
@@ -84,13 +73,18 @@ void scrieCos(const vector<ProdusInCos> &cos, const string &numeFile) {
 
 Produs gasesteProdusInStoc(const string &cod_de_bare,
                            const vector<Produs> &stoc) {
-  return gasesteElement(stoc, cod_de_bare,
-                        [](const Produs &p) { return p.getCodDeBare(); });
+  for (const auto &p : stoc) {
+    if (p.getCodDeBare() == cod_de_bare) {
+      return p;
+    }
+  }
+  Produs produsGol;
+  return produsGol;
 }
 
 void vizualizareCos() {
-  vector<ProdusInCos> cos = citireCos("cos_cumparaturi.txt");
-  vector<Produs> stoc = citireStoc("stoc.txt");
+  vector<ProdusInCos> cos = citireCos("shared/files/cos_cumparaturi.txt");
+  vector<Produs> stoc = citireStoc("shared/files/stoc.txt");
 
   if (cos.empty()) {
     cout << "Cosul de cumparaturi este gol." << endl;
@@ -127,7 +121,7 @@ void vizualizareCos() {
 }
 
 void adaugareProdusInCos(const string &cod_de_bare, int cantitate) {
-  vector<Produs> stoc = citireStoc("stoc.txt");
+  vector<Produs> stoc = citireStoc("shared/files/stoc.txt");
 
   // Verificam daca produsul exista in stoc
   Produs produsStoc = gasesteProdusInStoc(cod_de_bare, stoc);
@@ -144,7 +138,7 @@ void adaugareProdusInCos(const string &cod_de_bare, int cantitate) {
     return;
   }
 
-  vector<ProdusInCos> cos = citireCos("cos_cumparaturi.txt");
+  vector<ProdusInCos> cos = citireCos("shared/files/cos_cumparaturi.txt");
 
   // Verificam daca produsul exista deja in cos
   bool gasit = false;
@@ -171,13 +165,13 @@ void adaugareProdusInCos(const string &cod_de_bare, int cantitate) {
     cos.push_back(nouProdus);
   }
 
-  scrieCos(cos, "cos_cumparaturi.txt");
+  scrieCos(cos, "shared/files/cos_cumparaturi.txt");
   cout << "Produsul " << produsStoc.getDenumire()
        << " a fost adaugat in cos cu cantitatea " << cantitate << "." << endl;
 }
 
 void modificareProdusInCos(const string &cod_de_bare, int cantitateNoua) {
-  vector<ProdusInCos> cos = citireCos("cos_cumparaturi.txt");
+  vector<ProdusInCos> cos = citireCos("shared/files/cos_cumparaturi.txt");
   vector<Produs> stoc = citireStoc("stoc.txt");
 
   // Verificam daca produsul exista in stoc
@@ -210,14 +204,14 @@ void modificareProdusInCos(const string &cod_de_bare, int cantitateNoua) {
     return;
   }
 
-  scrieCos(cos, "cos_cumparaturi.txt");
+  scrieCos(cos, "shared/files/cos_cumparaturi.txt");
   cout << "Cantitatea pentru produsul " << produsStoc.getDenumire()
        << " a fost modificata la " << cantitateNoua << "." << endl;
 }
 
 void stergereProdusInCos(const string &cod_de_bare) {
-  vector<ProdusInCos> cos = citireCos("cos_cumparaturi.txt");
-  vector<Produs> stoc = citireStoc("stoc.txt");
+  vector<ProdusInCos> cos = citireCos("shared/files/cos_cumparaturi.txt");
+  vector<Produs> stoc = citireStoc("shared/files/stoc.txt");
 
   vector<ProdusInCos> cosNou;
   bool gasit = false;
@@ -241,7 +235,7 @@ void stergereProdusInCos(const string &cod_de_bare) {
     return;
   }
 
-  scrieCos(cosNou, "cos_cumparaturi.txt");
+  scrieCos(cosNou, "shared/files/cos_cumparaturi.txt");
 
   if (!numeProdus.empty()) {
     cout << "Produsul " << numeProdus << " a fost sters din cos." << endl;
@@ -263,7 +257,7 @@ DataCalendaristica getDataCurenta() {
 }
 
 void cumparare() {
-  vector<ProdusInCos> cos = citireCos("cos_cumparaturi.txt");
+  vector<ProdusInCos> cos = citireCos("shared/files/cos_cumparaturi.txt");
 
   if (cos.empty()) {
     cout << "Eroare: Cosul de cumparaturi este gol. Nu se poate plasa comanda."
@@ -271,7 +265,7 @@ void cumparare() {
     return;
   }
 
-  vector<Produs> stoc = citireStoc("stoc.txt");
+  vector<Produs> stoc = citireStoc("shared/files/stoc.txt");
 
   // Verificam din nou disponibilitatea tuturor produselor
   for (const auto &produsInCos : cos) {
@@ -302,7 +296,7 @@ void cumparare() {
   }
 
   // Scriu stocul actualizat
-  ofstream foutStoc("stoc.txt");
+  ofstream foutStoc("shared/files/stoc.txt");
   if (!foutStoc) {
     cout << "Eroare: nu s-a putut actualiza stocul." << endl;
     return;
@@ -315,7 +309,7 @@ void cumparare() {
   foutStoc.close();
 
   // Adaug comanda in fisierul comenzi.txt
-  ofstream foutComenzi("comenzi.txt", ios::app);
+  ofstream foutComenzi("shared/files/comenzi.txt", ios::app);
   if (!foutComenzi) {
     cout << "Eroare: nu s-a putut deschide fisierul comenzi.txt." << endl;
     return;
@@ -335,7 +329,7 @@ void cumparare() {
   foutComenzi.close();
 
   // Golesc cosul
-  ofstream foutCos("cos_cumparaturi.txt");
+  ofstream foutCos("shared/files/cos_cumparaturi.txt");
   foutCos.close();
 
   cout << "Comanda a fost plasata cu succes!" << endl;
