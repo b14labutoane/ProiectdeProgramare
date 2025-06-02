@@ -1,5 +1,5 @@
-#include "shared/data/Produs.h"
 #include "shared/data/DataCalendaristica.h"
+#include "shared/data/Produs.h"
 #include <ctime>
 #include <fstream>
 #include <iomanip>
@@ -172,7 +172,7 @@ void adaugareProdusInCos(const string &cod_de_bare, int cantitate) {
 
 void modificareProdusInCos(const string &cod_de_bare, int cantitateNoua) {
   vector<ProdusInCos> cos = citireCos("shared/files/cos_cumparaturi.txt");
-  vector<Produs> stoc = citireStoc("stoc.txt");
+  vector<Produs> stoc = citireStoc("shared/files/stoc.txt");
 
   // Verificam daca produsul exista in stoc
   Produs produsStoc = gasesteProdusInStoc(cod_de_bare, stoc);
