@@ -1,5 +1,5 @@
-#include "Produs.h"
 #include "DataCalendaristica.h"
+#include "Produs.h"
 #include <ctime>
 #include <fstream>
 #include <iomanip>
@@ -9,6 +9,17 @@
 #include <vector>
 
 using namespace std;
+
+template <typename T, typename KeyType, typename Getter>
+T gasesteElement(const vector<T> &colectie, const KeyType &cheieCautata,
+                 Getter getKey) {
+  for (const auto &element : colectie) {
+    if (getKey(element) == cheieCautata) {
+      return element;
+    }
+  }
+  return T{};
+}
 
 struct ProdusInCos {
   string cod_de_bare;
@@ -73,13 +84,8 @@ void scrieCos(const vector<ProdusInCos> &cos, const string &numeFile) {
 
 Produs gasesteProdusInStoc(const string &cod_de_bare,
                            const vector<Produs> &stoc) {
-  for (const auto &p : stoc) {
-    if (p.getCodDeBare() == cod_de_bare) {
-      return p;
-    }
-  }
-  Produs produsGol;
-  return produsGol;
+  return gasesteElement(stoc, cod_de_bare,
+                        [](const Produs &p) { return p.getCodDeBare(); });
 }
 
 void vizualizareCos() {
