@@ -1,0 +1,6 @@
+5
+1001 Lapte 12 5.5
+1002 Paine 8 2.3
+12345 Gogoasa 15 20
+12345 Langos 15 20
+12345 Langos 15 20
