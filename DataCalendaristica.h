@@ -23,7 +23,9 @@ public:
     bool esteAnBisect(int) const;
     bool dataValida(int, int, int) const;
     int zileInLuna(int , int);
-    
+    int getZi() const;
+    int getLuna() const;
+    int getAn() const;
     void set(int z, int l, int a) {
         if (!dataValida(z, l, a)) {
             throw invalid_argument("Data invalida la setare.");

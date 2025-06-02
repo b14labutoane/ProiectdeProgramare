@@ -5,6 +5,17 @@
 #include <sstream>
 using namespace std;
 
+int DataCalendaristica::getZi() const {
+    return zi;
+}
+
+int DataCalendaristica::getLuna() const {
+    return luna;
+}
+
+int DataCalendaristica::getAn() const {
+    return an;
+}
 
 int DataCalendaristica::zileInLuna(int luna, int an) const {
     switch(luna) {
